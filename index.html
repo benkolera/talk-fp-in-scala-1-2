@@ -28,6 +28,21 @@
 			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
 		</script>
+    <style>
+      pre.highlight {
+        padding: 30px 10px;
+        border: 1px solid #666;
+      }
+      .fade-out-nodisplay.visible {
+        display: none;
+      }
+      .fade-in-nodisplay {
+        display: none;
+      }
+      .fade-in-nodisplay.visible {
+        display: inline;
+      }
+    </style>
 
 		<!--[if lt IE 9]>
 		<script src="lib/js/html5shiv.js"></script>
@@ -44,11 +59,275 @@
 					<h1>FP in Scala</h1>
 					<h3>Chapters 1 and 2</h3>
 					<p>
-						<small>Created by <a href="http://benkolera.com">Ben Kolera</a> / <a href="http://twitter.com/benkolera">@benkolera</a></small>
+						<small>Created by <a href="http://twitter.com/benkolera">@benkolera</a></small>
 					</p>
 				</section>
+        <section>
+          <section>
+            <h1>Series Overview</h1>
+          </section>
+          <section>
+            <h2>The Book</h2>
+            <img src="images/fpinscala.png" alt="book cover" height="auto" width="50%;" />
+            <aside class="notes">
+              <p>We are going to follow through this wonderful book by Paul Chiusano and Rúnar Bjarnason</p>
+              <p>One of the best intros to the fundamentals of FP.</p>
+              <p>Just happen to learn the good parts of scala along the way.</p>
+            </aside>
+          </section>
+          <section>
+            <img src="images/contents.png" alt="book contents" height="auto" width="70%"/>
+            <aside class="notes">
+              <p>And here is the wonderful spread of topics that the book covers.</p>
+              <p>Give you a solid platform for understanding the essence of FP and how to design functional libraries.</p>
+              <p>Exercises heavily focus on making things from scratch, so you learn a lot in the process!</p>
+            </aside>
+          </section>
+          <section>
+            <h2>Target Audience</h2>
+            <img src="images/i-should-cat.jpg" height="auto" width="50%;" />
+            <aside class="notes">
+              <p>Anyone that wants to learn FP.</p>
+              <p>Absolute beginners that don't know any scala or FP.</p>
+              <p>Is a great fundamental refresher even for those who know FP</p>
+            </aside>
+          </section>
+          <section>
+            <h2>Course Plan</h2>
+            <p>Try to do 1-2 chapters per month (15 Chapters/9 months)</p>
+            <p>Hack nights for working through exercises and getting help</p>
+            <br>
+            <p>Plenty of help available via: <ul>
+              <li><a href="https://groups.google.com/forum/#!forum/scala-functional">fp-in-scala mailing list</a></li>
+              <li>freenode#fp-in-scala</li>
+              <li>freenode#bfpg</li>
+              <li><a href="https://github.com/fpinscala/fpinscala">https://github.com/fpinscala/fpinscala</a></li>
+            </ul></p>
+          </section>
+          <section>
+            <h2>Desired Outcomes</h2>
+            <p class="fragment">Help people get excited about and confident with FP.</p>
+            <p class="fragment">Keep things interesting and give people plenty of support.</p>
+            <p class="fragment">Moar Scala!</p>
+            <p class="fragment">Moar haskell Ryan Gosling memes! ;)</p>
+          </section>
+          <section>
+            <img src="images/noonecompares.jpg" height="auto" width="50%" />
+            <br>
+            <a href="http://haskellryangosling.tumblr.com/">via http://haskellryangosling.tumblr.com/</a>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h1>What is functional programming?</h1>
+          </section>
+          <section>
+            <p>Programming with pure functions</p>
+          </section>
+          <section>
+            <p>Where a pure function cannot contain things like:
+            <ul>
+              <li class="fragment">Modifying a variable</li>
+              <li class="fragment">Modifying a data structure in place</li>
+              <li class="fragment">Setting a field on an object</li>
+              <li class="fragment">Throwing an exception</li>
+              <li class="fragment">Any IO (stdin,stdout,files, network, etc)</li>
+            </ul>
+            </p>
+          </section>
+          <section>
+            <h2>How is this possible / useful?</h2>
+            <img src=images/confusedpuppy.gif height="auto" width="50%" />
+            <p>This is a normal reaction. It's weird, but bear with me.</p>
+            <aside class="notes">
+              <p>But when you start, this sounds crazy and impractical.</p>
+              <p>This entire book is dedicated to techniques to make useful programs with pure functions</p>
+              <p>It's all possible, you just need to shift thinking a bit.</p>
+              <p>Once this stuff is mastered, you can write programs that do the same thing but in a much more modular way!</p>
+            </aside>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h1>Benefits of FP: Example</h1>
+          </section>
+          <section>
+            <pre class="highlight scala">
+<span class="fragment" data-fragment-index=0>class Cafe {</span>
+<span class="fragment" data-fragment-index=1>  def buyCoffee(cc: CreditCard): Coffee = {</span>
+<span class="fragment" data-fragment-index=2>    val cup = new Coffee()</span>
+<span class="fragment" data-fragment-index=3>    cc.charge(cup.price)</span>
+<span class="fragment" data-fragment-index=4>    cup</span>
+<span class="fragment" data-fragment-index=1>  }</span>
+<span class="fragment" data-fragment-index=0>}</span></pre>
+            <aside class="notes">
+              <p>Lets strawman OO by implementing the most pathologically bad Cafe class.</p>
+              <p>We need to make a function that will produce a cup of coffee and charge a CC appropriately.</p>
+              <p>So we make the cup.</p>
+              <p>Do the side effect of charging the cc.</p>
+              <p>Return the cup of coffee.</p>
+            </aside>
+          </section>
+          <section>
+            <h2>But that's gross</h2>
+            <p>It's ugly to test as you can't separate the inert CC details from the side effect.</p>
+            <p>No one writes production java code this way.</p>
+          </section>
+          <section>
+            <pre class="highlight scala">
+class Cafe {
+  def buyCoffee(cc: CreditCard<span class="fragment fade-in-nodisplay" data-fragment-index=0>, p: Payments</span>): Coffee = {
+    val cup = new Coffee()
+    <span class="fragment fade-out fade-out-nodisplay" data-fragment-index=1>cc.charge(cup.price)</span><span class="fragment" data-fragment-index=1>p.charge(cc, cup.price)</span>
+    cup
+  }
+}</pre>
+            <aside class="notes">
+              <p>So what we're more likely to have is a payments service separate to the CC that we can easily mock.</p>
+              <p>And then enact our effect through it instead.</p>
+              <p>Which allows us to mock just the minimum surface area to isolate the side effect.</p>
+              <p>But what happens if a customer wants to buy multiple coffees?!?</p>
+              <p>We could write a new function that buys multiple ones, but that would be sad.</p>
+            </aside>
+          </section>
+          <section>
+            <h2>Side effects are anti-modular</h2>
+            <img src="images/sideeffects_vs_purity.png" height="auto" width="80%" />
+            <aside class="notes">
+              <p>The caller has no control over the side effects without changing the API.</p>
+              <p>We already accept some API abstraction for testing (interfaces, spring, etc), why not work in a setting that allows for maximum modularity?</p>
+            </aside>
+          </section>
+          <section>
+            <p>This entire book is dedicated to ideas that allow you to maximise this kind of modularity!</p>
+          </section>
+          <section>
+            <h2>Our first functional steps</h2>
+            <pre class="highlight scala">
+def buyCoffee(cc: CreditCard): (Coffee, Charge) = {
+  val cup = new Coffee()
+  (cup, Charge(cc, cup.price))
+}</pre>
+            <aside class="notes">
+              <p>Lets return a value representing a charge instead.</p>
+              <p>We return the coffee and charge in a tuple, which is a fancy way of returning two things without a unique type.</p>
+            </aside>
+          </section>
+          <section>
+            <h2>Charge Definition</h2>
+            <pre class="highlight scala">
+case class Charge(cc: CreditCard, amount: Double) {
+<span class="fragment" data-fragment-index=1>  def combine(other: Charge): Charge =</span>
+<span class="fragment" data-fragment-index=2>    if (cc == other.cc)
+      this.copy(amount = amount + other.amount)</span>
+<span class="fragment" data-fragment-index=3>    else
+      throw new Exception("Combined charges to different cards")</span>
+}</pre>
+            <br>
+            <p class="fragment" data-fragment-index=4>Spoiler 1: Functional Error handling in chapter 4.</p>
+            <p class="fragment" data-fragment-index=5>Spoiler 2: Generalised way 'appending' things in chapter 10.</p>
+            <aside class="notes">
+              <p>A case class defines a class with immutable public fields as defined by the constructor.</p>
+              <p>We can implement functions as part of the class that can reference this and the attributes.</p>
+              <p>We need to check that we're combining charges on the same CC. Case class provides.copy to make a new charge with a field changed.</p>
+              <p>And for now we'll have to just throw an exception.</p>
+              <p>Spoilers: Errors in ch 4.</p>
+              <p>Spoilers: Monoids in ch 10.</p>
+            </aside>
+          </section>
+          <section>
+            <h2>Reusing buyCoffee</h2>
+            <pre class="highlight scala">
+def buyCoffees(cc: CreditCard, n: Int): (List[Coffee], Charge) = {
+<span class="fragment" data-fragment-index=0>  val purchases: List[(Coffee, Charge)] = List.fill(n)(buyCoffee(cc))</span>
+<span class="fragment" data-fragment-index=1>  val (coffees, charges) = purchases.unzip</span>
+<span class="fragment" data-fragment-index=2>  (coffees, charges.reduce((c1,c2) => c1.combine(c2)))</span>
+}</pre>
+            <br>
+            <p class="fragment" data-fragment-index="3">Code reuse, success!</p>
+            <aside class="notes">
+              <p>Lets try to implement a function that returns n coffees and a single CC charge.</p>
+              <p>List.fill creates a list of n buyCoffee results. But that gives us a list of charges which we don't want.</p>
+              <p>unzip splits a list of tuples into a tuple of two lists.</p>
+              <p>Reduce takes each thing in the list and combines them together into a single charge.</p>
+              <p>Yes, this will die if n &lt;= 0, but we're trying to keep things simple!</p>
+            </aside>
+          </section>
+          <section>
+            <h2>Reasonability</h2>
+            <p class="fragment" data-fragment-id="0">Making the charge a first class entity rather than a side effect increased modularity.</p>
+            <p class="fragment" data-fragment-id="1">But it also increases our ability to reason about why a function does by its type.</p>
+            <p class="fragment" data-fragment-id="2">This makes the code safer to reuse because it's clear that there aren't weird side effects.</p>
+            <aside class="notes">
+              <p>Making the charge a first class entity make it more reusable.</p>
+              <p>But it also increases our ability to reason about what a function does by its type.</p>
+              <p>Knowing the code doesn't have side effects, it makes it safer to compose.</p>
+              <p>Code that is more reusable and safely composable is awesome!</p>
+            </aside>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h1>What is a pure function?</h1>
+          </section>
+          <section>
+            <p>A pure function A =&gt; B maps every value of type A to exactly one value of type B</p>
+            <p class="fragment" data-fragment-index="0">The value of B is only derived based on the value of A (not some external state).</p>
+            <p class="fragment" data-fragment-index="1">intToString :: Int =&gt; String is an example.</p>
+          </section>
+          <section>
+            <h2>Referencial Transparency</h2>
+            <p class="fragment" data-fragment-index=0>An expression e is referentially transparent if:<br/>
+            <span class="fragment" data-fragment-index=1>for all programs p<br/></span>
+            <span class="fragment" data-fragment-index=2>all occurences of e can be replaced by the result without affecting the meaning of p.</span></p>
+            <br>
+            <p class="fragment" data-fragment-index=3>A function f is pure if the expression f(x) is referentially transparent for all referentially
+transparent x.</p>
+            <br>
+            <p class="fragment" data-fragment-index="4">E.g. (2 + 3) + (2 + 3) == 5 + 5 == 10</p>
+            <aside class="notes">
+              <p>The key property we care about is referencial transparency.</p>
+              <p>An expression is RT if for all programs p</p>
+              <p>All occurences of e could be replaced by the result without affecting the meaninig of the program.</p>
+              <p>A function is pure if a call to it with referentially transparent params is referencially transparent.</p>
+              <p>Note this means that using mutability inside a function is actually OK, as long as that mutability doesn't leak out.</p>
+            </aside>
+          </section>
+          <section>
+            <h2>Cafe 0.1 Violates RT</h2>
+            <pre class="highlight scala">
+def buyCoffee(cc: CreditCard): Coffee = {
+  val cup = new Coffee()
+  cc.charge(cup.price) <span class="fragment" data-fragment-index="0">//This is discarded and not part of output</span>
+  cup <span class="fragment" data-fragment-index="1">                 // Thus the return is just new Coffee()</span>
+}</pre>
+            <br>
+            <p class="fragment" data-fragment-index="2">Clearly, 'new Coffee()' and 'buyCoffee(cc)' are not equivalent.</p>
+          </section>
+          <section>
+            <h2>Cafe 2.0 is RT</h2>
+            <pre class="highlight scala">
+def buyCoffee(cc: CreditCard): (Coffee, Charge) = {
+  val cup = new Coffee()
+  (cup, Charge(cc, cup.price))
+}</pre>
+            <p>'buyCoffee(cc)' and '(new Coffee(),Charge(cc,cup.price))' are equivalent.</p>
+          </section>
+          <section>
+            <h2>Equational Reasoning</h2>
+            <p>Coding with pure functions allows our brains and our code to make these equational substitutions.</p>
+            <p class="fragment">This provides a foundation for well-reasoned refactoring, optimisation and abstraction.</p>
+            <p class="fragment">For algebraic thinking about code to the nth degree, check out Richard Bird's books: <a href="http://www.amazon.com/Thinking-Functionally-Haskell-Richard-Bird/dp/1107452643/ref=sr_1_1?s=books&ie=UTF8&qid=1454962641&sr=1-1&keywords=thinking+functionally+with+haskell">Thinking Functionally with Haskell</a> and <a href="http://www.amazon.com/Pearls-Functional-Algorithm-Design-Richard/dp/0521513383/ref=asap_bc?ie=UTF8">Pearls of Functional Algorithm Design</a>!</p>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h1>Chapter 1: Summary</h1>
+          </section>
+        </section>
 				<section style="text-align: left;">
 					<h1>THE END</h1>
+          <p></p>
 				</section>
 
 			</div>
@@ -67,6 +346,11 @@
 				progress: true,
 				history: true,
 				center: true,
+        margin: 0.05,
+        width: 1680,
+        height: 951,
+        minScale: 0.2,
+        maxScale: 2,
 
 				transition: 'slide', // none/fade/slide/convex/concave/zoom
 
@@ -75,7 +359,11 @@
 					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
 					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
 					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { 
+              [].forEach.call( document.querySelectorAll( '.highlight' ), function( v, i) {
+                  hljs.highlightBlock(v);
+              });
+          } },
 					{ src: 'plugin/zoom-js/zoom.js', async: true },
 					{ src: 'plugin/notes/notes.js', async: true }
 				]
