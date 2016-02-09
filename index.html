@@ -57,14 +57,17 @@
 			<div class="slides">
 				<section>
 					<h1>FP in Scala</h1>
-					<h3>Chapters 1 and 2</h3>
+          <h3>Intro to FP and Scala (Chapters 1 & 2)</h3>
 					<p>
-						<small>Created by <a href="http://twitter.com/benkolera">@benkolera</a></small>
+          <small>Created by <a href="http://twitter.com/benkolera">@benkolera</a> for the February 2016 <a href="http://bfpg.org/">BFPG</a> Meetup</small>
 					</p>
 				</section>
         <section>
           <section>
             <h1>Series Overview</h1>
+            <aside class="notes">
+              <p>This talk is part of a series, so lets talk about the plan for that first.</p>
+            </aside>
           </section>
           <section>
             <h2>The Book</h2>
@@ -80,16 +83,17 @@
             <aside class="notes">
               <p>And here is the wonderful spread of topics that the book covers.</p>
               <p>Give you a solid platform for understanding the essence of FP and how to design functional libraries.</p>
-              <p>Exercises heavily focus on making things from scratch, so you learn a lot in the process!</p>
+              <p>Exercises heavily and focuses on making things from scratch, so you learn a lot in the process!</p>
             </aside>
           </section>
           <section>
             <h2>Target Audience</h2>
             <img src="images/i-should-cat.jpg" height="auto" width="50%;" />
             <aside class="notes">
+              <p>The target audience for this series is:</p>
               <p>Anyone that wants to learn FP.</p>
-              <p>Absolute beginners that don't know any scala or FP.</p>
-              <p>Is a great fundamental refresher even for those who know FP</p>
+              <p>Tailored for absolute beginners that don't know any scala or FP.</p>
+              <p>But is still a great fundamental refresher even for those who know FP</p>
             </aside>
           </section>
           <section>
@@ -103,10 +107,15 @@
               <li>freenode#bfpg</li>
               <li><a href="https://github.com/fpinscala/fpinscala">https://github.com/fpinscala/fpinscala</a></li>
             </ul></p>
+            <aside class="notes">
+              <p>We're planning to work on 1-2 chapters per meetup.</p>
+              <p>Plus time at the hack night for working through the exercises.</p>
+              <p>Plenty of people to help outside of that tool on the ML or IRC.</p>
+            </aside>
           </section>
           <section>
             <h2>Desired Outcomes</h2>
-            <p class="fragment">Help people get excited about and confident with FP.</p>
+            <p class="fragment">Help people share my excitement about FP and be confident with it.</p>
             <p class="fragment">Keep things interesting and give people plenty of support.</p>
             <p class="fragment">Moar Scala!</p>
             <p class="fragment">Moar haskell Ryan Gosling memes! ;)</p>
@@ -116,13 +125,23 @@
             <br>
             <a href="http://haskellryangosling.tumblr.com/">via http://haskellryangosling.tumblr.com/</a>
           </section>
+          <section>
+            <h1>Ask questions at any time!</h1>
+            <br>
+            <p>This talk is a beginner level talk.</p>
+            <br>
+            <p>If there is anything that doesn't quite make sense, please put your hand up!</p>
+          </section>
         </section>
         <section>
           <section>
+            <h2><small>Chapter 1</small></h2>
             <h1>What is functional programming?</h1>
+            <aside class="notes">
+            </aside>
           </section>
           <section>
-            <p>Programming with pure functions</p>
+            <p>Programming with pure functions!</p>
           </section>
           <section>
             <p>Where a pure function cannot contain things like:
@@ -134,6 +153,9 @@
               <li class="fragment">Any IO (stdin,stdout,files, network, etc)</li>
             </ul>
             </p>
+            <aside class="notes">
+              <p>Where a pure function cannot do naughty things like ...</p>
+            </aside>
           </section>
           <section>
             <h2>How is this possible / useful?</h2>
@@ -181,6 +203,9 @@ class Cafe {
     <span class="fragment fade-out fade-out-nodisplay" data-fragment-index=1>cc.charge(cup.price)</span><span class="fragment" data-fragment-index=1>p.charge(cc, cup.price)</span>
     cup
   }
+<span class="fragment" data-fragment-index=2>  def buyCoffees(cc:CreditCard, p:Payments, n:Int): List[Coffee] = {
+    List.fill(n).map( buyCoffee(cc,p) ); // Is our customer really going to be happy with n CC transactions???
+  }</span>
 }</pre>
             <aside class="notes">
               <p>So what we're more likely to have is a payments service separate to the CC that we can easily mock.</p>
@@ -316,18 +341,374 @@ def buyCoffee(cc: CreditCard): (Coffee, Charge) = {
           <section>
             <h2>Equational Reasoning</h2>
             <p>Coding with pure functions allows our brains and our code to make these equational substitutions.</p>
-            <p class="fragment">This provides a foundation for well-reasoned refactoring, optimisation and abstraction.</p>
-            <p class="fragment">For algebraic thinking about code to the nth degree, check out Richard Bird's books: <a href="http://www.amazon.com/Thinking-Functionally-Haskell-Richard-Bird/dp/1107452643/ref=sr_1_1?s=books&ie=UTF8&qid=1454962641&sr=1-1&keywords=thinking+functionally+with+haskell">Thinking Functionally with Haskell</a> and <a href="http://www.amazon.com/Pearls-Functional-Algorithm-Design-Richard/dp/0521513383/ref=asap_bc?ie=UTF8">Pearls of Functional Algorithm Design</a>!</p>
+            <p class="fragment" data-fragment-id="0">This reasoning is local to the function with no extra context.</p>
+            <p class="fragment" data-fragment-id="1">This allows us to create code that can be understood and reused independently.</p>
+            <p class="fragment" data-fragment-id="2">And we can abstract over, refactor, optimise and compose our code with predicable results.</p>
+          </section>
+          <section>
+            <p>This is super important to me because:
+              <ul>
+                <li class="fragment">I'm <strong>lazy</strong> and want to write as little code as possible.</li>
+                <li class="fragment">I'm <strong>busy</strong> and easily want to understand the code when I change it later.</li>
+                <li class="fragment">My <strong>brain is small</strong> and can't keep lots of stuff in my head when understanding and reusing code.</li>
+              </ul>
+            </p>
+          </section>
+          <section>
+            <p>So I can write code without feeling like this all the time! :)</p>
+            <img class="fragment" data-fragment-index=0 src="images/failedme.jpg" height="auto" width="60%" />
+            <p class="fragment" data-fragment-index=0><em><small>FILM RELEASED THURSDAY NIGHT! AWWW YEAH!</small></em></p>
           </section>
         </section>
         <section>
           <section>
-            <h1>Chapter 1: Summary</h1>
+            <h2>Chapter 1</h2>
+            <h1>Fin</h1>
+            <p>Questions?</p>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2><small>Chapter 2</small></h2>
+            <h1>Scala & FP Primer</h1>
+          </section>
+          <section>
+            <h1>This book is not about Scala!</h1>
+          </section>
+          <section>
+            <p>But we are going to be writing scala ... </p>
+            <p class="fragment">... and be writing pure functions in scala.</p>
+            <br>
+            <p class="fragment">So we are going to get some practice at that! :)</p>
+          </section>
+          <section>
+            <p>Some of these concepts can be gnarly if you are unfamiliar with them.</p>
+            <br>
+            <p class="fragment">Don't worry if they all don't sink in now.</p>
+            <p class="fragment">You can do the exercises and let it all sink in during the later chapters.</p>
+          </section>
+        </section>
+        <section>
+          <section>
+            <pre class="highlight scala">
+// A comment!
+/* Another comment */
+/** A documentation comment */
+object MyModule {
+<span class="fragment" data-fragment-index="0">
+  def abs(n: Int): Int =
+<span class="fragment" data-fragment-index=1>    if (n < 0) -n
+    else n
+</span></span>
+<span class="fragment" data-fragment-index=2>
+  private def formatAbs(x: Int) = {
+<span class="fragment" data-fragment-index=3>    s"The absolute value of $x is ${abs(x)}"</span>
+<span class="fragment" data-fragment-index=4>    val f = "The absolute value of %d is %d"
+    f.format(x, abs(x))</span>
+  }
+</span>
+<span class="fragment" data-fragment-index=5>
+  def main(args: Array[String]): Unit {
+    println(formatAbs(-42))
+  }</span>
+}</pre>
+            <p class="fragment" data-fragment-index=6><b>NOTE:</b> If you leave the equals off a function definition the return type is Unit regardless of the block</p>
+            <aside class="notes">
+              <p>An companion object is a singleton, so it's where your static functions go.</p>
+              <p>Functions are public by default. The colon after the params is the return type. Body after the equals. Abs is Int =&gt; Int</p>
+              <p>If expressions are expressions, so both branches need to have the same type! Note return is optional.</p>
+              <p>Private functions can only inside this object. Also protected and package level access. Braces for denoting multiple statements. Note return type missing. Not recommended for public functions.</p>
+              <p>We can interpolate strings like this. Curly braces to evaluate an expression.</p>
+              <p>Or the code often uses the old school string format function. Mostly the same.</p>
+              <p>Like java, our entry point to our app is called main, takes and array of string args and performs a side effect. Unit == void.</p>
+            </aside>
+          </section>
+          <section>
+            <h2>Running the code</h2>
+            <pre class="highlight bash">
+scalac MyModule.scala && scala MyModule  # Compile and run a single file.
+scala MyModule.scala                     # Scripted mode, so doesn't leave the compiled files in CWD.</pre>
+          </section>
+          <section>
+            <h2>REPL</h2>
+            <pre class="highlight">
+$ scala
+Welcome to Scala version 2.10.4 (OpenJDK 64-Bit Server VM, Java 1.8.0_65).
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> 
+<span class="fragment" data-fragment-index=0>
+scala> :load MyModule.scala
+Loading MyModule.scala...
+defined module MyModule </span>
+<span class="fragment" data-fragment-index=1>
+scala> :t MyModule.abs</span>
+<span class="fragment" data-fragment-index=2><console>:9: error: missing arguments for method abs in object MyModule;
+follow this method with `_' if you want to treat it as a partially applied function
+              MyModule.abs
+                       ^</span>
+<span class="fragment" data-fragment-index=3>scala> :t MyModule.abs _
+Int => Int</span>
+
+<span class="fragment" data-fragment-index=4>scala> MyModule.main(Array())
+The absolute value of -42 is 42</span>
+
+<span class="fragment" data-fragment-index=5>scala> :paste
+// Entering paste mode (ctrl-D to finish)
+if ( 1 == 2 ) 
+  "madness"
+else
+  "sanity"
+
+// Exiting paste mode, now interpreting.
+res5: String = sanity</span></pre>
+            <aside class="notes">
+              <p>Or we can load things up in the repl. The repl is your friend.</p>
+              <p>You can load your file with the :load command.</p>
+              <p>An important part of the repl is inspecting the type of an expression.</p>
+              <p>But it unfortunately doesn't work as you'd hope for static functions.</p>
+              <p>But with the _ it will output something nice for you.</p>
+              <p>And we can run the main by hand if we wish.</p>
+              <p>Paste mode is really handy for testing out code you have found.</p>
+            </aside>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h1>Namespacing</h1>
+          </section>
+          <section>
+            <p>Every value in scala is (pretty much) an object that was declared with val or object.</p>
+            <p class="fragment">Those objects act as namespaces for methods and values inside of them.</p>
+            <p class="fragment">We can access the values inside an object with the dot operator.</p>
+            <p class="fragment">We can import the symbols from an object into our current scope using import.</p>
+            <pre class="fragment highlight">scala> MyModule.abs(-42)
+res6: Int = 42
+
+scala> import MyModule._
+import MyModule._
+
+scala> abs(-42)
+res7: Int = 42</pre>
+            <aside class="notes">
+              <p>Every value in scala is an object.</p>
+              <p>They act as namespaces for the methods and values inside them. Note the sad distinction between methods and functions (hence the _ in the repl).</p>
+              <p>We can access the values of a namespace with dot.</p>
+              <p>Or we can import the public symbols into our current scope.</p>
+              <p>So if you are feeling lazy you can save yourself some typing in the repl by bringing abs into the repl scope.</p>
+            </aside>
+          </section>
+          <section>
+            <h2>Operators</h2>
+            <p>There are actually none!</p>
+            <p class="fragment">Any single arity function of an object can be called infix.</p>
+            <pre class="fragment highlight">scala> MyModule abs -42
+res8: Int = 42
+
+scala> 1 + 2 
+res9: Int = 3
+
+scala> (1:Int).+(2)
+res12: Int = 3</pre>
+
+          </section>
+        </section>
+        <section>
+          <section>
+            <h1>Higher Order Functions (HOFs)</h1>
+            <img src="images/hoff.jpg" height="auto" width="50%" />
+          </section>
+          <section>
+            <p>A fancy name for functions that take functions as arguments.</p>
+            <p class="fragment">Writing and using existing HOFs will become incredibly useful and natural over time.</p>
+            <p class="fragment">List.map is a HOF that applies the function to every element in the list.</p>
+            <pre class="highlight scala fragment">scala> List( 1, -2, 3 ).map( abs )
+res16: List[Int] = List(1, 2, 3)</pre>
+          </section>
+        </section>
+        <section class="section">
+          <section>
+            <h1>Writing loops functionally</h1>
+          </section>
+          <section>
+            <p>Lets implement factorial! (n:Int) =&gt; Int such that the return is n x (n - 1) ... x 1 </p>
+            <p>But without a for loop and mutable variable like we are used to.</p>
+          </section>
+          <section>
+            <pre class="highlight scala">def factorial(n: Int): Int = {
+<span class="fragment" data-fragment-index=0>  def go(n: Int, acc: Int): Int =
+<span class="fragment" data-fragment-index=1>    if (n <= 0) acc</span>
+<span class="fragment" data-fragment-index=2>    else go(n-1, n*acc)</span></span>
+
+<span class="fragment" data-fragment-index=3>  go(abs(n), if (n < 0) -1 else 1)</span>
+}</pre>
+            <aside class="notes">
+              <p>So we start off with the function we want.</p>
+              <p>Then we are going to write a inner recursive helper function that takes our accumulated result as an extra param.</p>
+              <p>If n is 0 or below 0, return our accumulator.</p>
+              <p>Else recurse again for n-1 and updating our loop accumulator to the next value.</p>
+              <p>Then kick off the helper with the appropriate initial accumulator.</p>
+            </aside>
+          </section>
+          <section>
+            <h2>Tail Calls/Recursion</h2>
+            <p>A recursive call of a function is in "tail position" if it does nothing but return the value from the next step.</p>
+            <p>Tail recursive functions are optimised into a while loop so that they don't consume stack.</p>
+            <p>You can annotate the function with @annotation.tailrec to get a compile failure if it isn't tail recursive.</p>
+          </section>
+          <section>
+            <h2>Not tail recursive</h2>
+            <pre class="highlight scala">@annotation.tailrec
+def factorial(n: Int): Int = {
+  if (n == 0) 1
+  else n * factorial(abs(n)-1)
+}
+            
+//error: could not optimize @tailrec annotated method factorial: it contains a recursive call not in tail position
+//    else n * factorial(abs(n)-1)</pre>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h1>Writing your own HOFs</h1>
+          </section>
+          <section>
+            <pre class="highlight scala">object MyModule {
+  // Assume that abs and factorial are defined ...
+
+  private def formatAbs(x: Int) = {
+    val msg = "The <span class="fragment highlight-green" data-fragment-index=0>absolute value</span> of %d is %d."
+    msg.format(x, <span class="fragment highlight-green" data-fragment-index=0>abs</span>(x))
+  }
+  private def formatFactorial(n: Int) = {
+    val msg = "The <span class="fragment highlight-green" data-fragment-index=0>factorial</span> of %d is %d."
+    msg.format(n, <span class="fragment highlight-green" data-fragment-index=0>factorial</span>(n))
+  }
+  def main(args: Array[String]): Unit = {
+    println(formatAbs(-42))
+    println(formatFactorial(7))
+  }
+}</pre>
+            <aside class="notes">
+              <p>Lets say that we found ourselves in this unfortunate case of duplicated code.</p>
+              <p>The only things different between formatAbs and formatFactorial is a function and a name!</p>
+            </aside>
+          </section>
+          <section>
+            <pre class="highlight scala">def formatResult(<span class="fragment" data-fragment-index=0>name: String</span>, n: Int, <span class="fragment" data-fragment-index=2>f: Int => Int</span>) = {
+<span class="fragment" data-fragment-index=3>  val msg = "The %s of %d is %d."</span>
+<span class="fragment" data-fragment-index=4>  msg.format(name, n, f(n))</span>
+}
+
+<span class="fragment" data-fragment-index=5>scala> formatResult("absolute value", -42, abs)
+res0: String = "The absolute value of -42 is 42."
+
+scala> formatResult("factorial", 7, factorial)
+res1: String = "The factorial of 7 is 5040."</span></pre>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h1>Polymorphic Functions</h1>
+            <aside class="notes">
+              <p>So far we've just written monomorphic functions (formatResult is hardcoded to int).</p>
+              <p>Often, we want to write functions that aren't hardcoded to a specific type to get more reuse.</p>
+            </aside>
+          </section>
+          <section>
+            <p>Say we want to write a function that will find the first index of an array that satisfies a predicate.</p>
+            <pre class="fragment highlight scala" data-fragment-index=0>def findFirst[A]<span class="fragment" data-fragment-index=1>(as: Array[A], p: A => Boolean): Int = {</span>
+<span class="fragment" data-fragment-index=2>  @annotation.tailrec
+  def loop(n: Int): Int =</span>
+<span class="fragment" data-fragment-index=3>    if (n >= as.length) -1</span>
+<span class="fragment" data-fragment-index=4>    else if (p(as(n))) n</span>
+<span class="fragment" data-fragment-index=5>    else loop(n + 1)</span>
+
+<span class="fragment" data-fragment-index=6>  loop(0)</span>
+}
+
+<span class="fragment" data-fragment-index="7">scala> findFirst(Array("a","b","c","b"), (x:String) => x == "b" )
+res43: Int = 1
+
+scala> findFirst(Array(1,2,3,4,5), (x:Int) => x == 3 )
+res45: Int = 2
+</span>
+<span class="fragment" data-fragment-index=8>
+scala> findFirst(Array(1,2,3,4,5), _ == 3 )
+<console>:13: error: missing parameter type for expanded function ((x$1) => x$1.$eq$eq(3))
+              findFirst(Array(1,2,3,4,5), _ == 3 )
+                                          ^
+<span class="fragment" data-fragment-index=9>scala> findFirst[String](Array("a","b","c","b"), _ == "b" )
+res43: Int = 1
+
+scala> findFirst[Int](Array(1,2,3,4,5), _ == 3 )
+res45: Int = 2
+</span>
+            </pre>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h1>Follow the types / Parametricity</h1>
+            <aside class="notes">
+              <p>One last pointer before we go. Types are your friend when figuring out how to implement something.</p>
+            </aside>
+          </section>
+          <section>
+            <p>Often when implementing a function, the types will guide you as there are only a few possibilities.</p>
+          </section>
+          <section>
+            <pre class="highlight scala">def unobtainium[A,B,C](a: A, f: (A,B) => C): B => C =
+<span class="fragment">  (b: B) =></span> <span class="fragment"> f(a, b)</span></pre>
+            <aside class="notes">
+              <p>Say you're asked to write this function. Which you have no idea and feels completely foreign, impossible.</p>
+              <p>The hint is that our return type is B => C, and we don't have one of these in the input so we cannot create one.</p>
+              <p>Our only option is to return an anonymous function from B => ... something that return a C.</p>
+              <p>Now we have an a, a b and a function from (a,b) => C, so apply the function to a and b.</p>
+              <p>This is the ONLY possible implementation of this function!</p>
+            </aside>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2><small>Chapter 2</small></h2>
+            <h1>Summary</h1>
+          </section>
+          <section>
+            <p>We learned how</p>
+            <ul>
+              <li>To write functions, read their types</li>
+              <li>To run said functions as a compiled app and via repl</li>
+              <li>The namespacing works, how to import stuff and that methods and functions are weirdly different.</li>
+              <li>To write tail recursive functions instead of loops (better stuff coming)</li>
+              <li>Write Higher order and polymorphic functions.</li>
+              <li>Make anonymous functions with the => and with underscores.</li>
+              <li>To follow the types when implementing an exercise.</li>
+            </ul>
+          </section>
+          <section>
+            <h2>That's a lot!</h2>
+            <p>Scala is huge! Don't worry if it doesn't make sense yet.</p>
+            <p>Do the exercises in chapter 2 at home or at the hack night and it'll sink in!</p>
           </section>
         </section>
 				<section style="text-align: left;">
 					<h1>THE END</h1>
-          <p></p>
+
+          <p><em>Thanks very much to Paul and Rúnar for this book!</em></p>
+          <br />
+
+          <p>Slides: <a href="http://fpinscala12.benkolera.com">fpinscala12.benkolera.com</a></p>
+          <p>Book: <a href="https://www.manning.com/books/functional-programming-in-scala">https://www.manning.com/books/functional-programming-in-scala</a></p>
+          <p>Exercises: <a href="https://github.com/fpinscala/fpinscala">https://github.com/fpinscala/fpinscala</a></p>
+          <p>Me: <a href="http://twitter.com/benkolera">@benkolera</a> / ben&#149;kolera@gmail&#149;com
+
+          <br>
+          <br>
+          
+          <p><small>Looking for volunteers for future chapters. Have a chat to me if you're interested!</small></p>
+
 				</section>
 
 			</div>
