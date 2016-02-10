@@ -217,14 +217,17 @@ class Cafe {
           </section>
           <section>
             <h2>Side effects are anti-modular</h2>
-            <img src="images/sideeffects_vs_purity.png" height="auto" width="80%" />
+            <p>The caller often has no control over the side effects.</p>
+            <p>This makes the code very tricky to reuse in novel ways.</p>
+            <p>FP is all about pushing these effects outwards to maximise pure, modular code.</p>
             <aside class="notes">
               <p>The caller has no control over the side effects without changing the API.</p>
-              <p>We already accept some API abstraction for testing (interfaces, spring, etc), why not work in a setting that allows for maximum modularity?</p>
+              <p>This makes the code very tricky to reuse in novel ways.</p>
+              <p>FP is all about pushing these effects outwards to maximise pure, modular code.</p>
             </aside>
           </section>
           <section>
-            <p>This entire book is dedicated to ideas that allow you to maximise this kind of modularity!</p>
+            <p>This entire book is dedicated to ideas that allow you to do this! :)</p>
           </section>
           <section>
             <h2>Our first functional steps</h2>
@@ -236,6 +239,7 @@ def buyCoffee(cc: CreditCard): (Coffee, Charge) = {
             <aside class="notes">
               <p>Lets return a value representing a charge instead.</p>
               <p>We return the coffee and charge in a tuple, which is a fancy way of returning two things without a unique type.</p>
+              <p>This gives responsibilty and control over actually charging the card to the caller.</p>
             </aside>
           </section>
           <section>
@@ -276,6 +280,14 @@ def buyCoffees(cc: CreditCard, n: Int): (List[Coffee], Charge) = {
               <p>unzip splits a list of tuples into a tuple of two lists.</p>
               <p>Reduce takes each thing in the list and combines them together into a single charge.</p>
               <p>Yes, this will die if n &lt;= 0, but we're trying to keep things simple!</p>
+            </aside>
+          </section>
+          <section>
+            <img src="images/sideeffects_vs_purity.png" height="auto" width="80%" />
+            <aside class="notes">
+              <p>Side effects mean that the caller means that the side effects are outside the control of the caller.</p>
+              <p>Hard to test, hard to reason about, hard to use in unexpected ways.</p>
+              <p>Whereas returning a charge allows the callers to easiliy do new things, like batching charges.</p>
             </aside>
           </section>
           <section>
@@ -528,7 +540,8 @@ res16: List[Int] = List(1, 2, 3)</pre>
           </section>
         </section>
         <section class="section">
-          <section>
+          <section
+            <h2>(Slight detour)</h2>
             <h1>Writing loops functionally</h1>
           </section>
           <section>
